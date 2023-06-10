@@ -21,6 +21,7 @@
 
     EXPOSE 8000
 
+    #This is the original cmd lines w. error
     #RUN chmod +x /app/entrypoint.sh
     #ENTRYPOINT ["/app/entrypoint.sh"]
 
