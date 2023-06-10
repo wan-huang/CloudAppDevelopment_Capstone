@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 
-
 # Create an `about` view to render a static about page
 def about(request):
     context = {}
@@ -113,4 +112,31 @@ def get_dealerships(request):
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
 # ...
-
+def add_review(request, dealer_id):
+    if request.method == "GET":
+        url = f"https://us-south.functions.appdomain.cloud/api/v1/web/58315d6f-e563-4b26-a1d1-b806616886c4/dealership-package/get-dealership?dealerId={dealer_id}"
+        # Get dealers from the URL
+        context = {
+            "cars": CarModel.objects.all(),
+            "dealer": get_dealers_from_cf(url)[0],
+        }
+        print(context)
+        return render(request, 'djangoapp/add_review.html', context)
+    if request.method == "POST":
+        form = request.POST
+        review = {
+            "name": f"{request.user.first_name} {request.user.last_name}",
+            "dealership": dealer_id,
+            "review": form["content"],
+            "purchase": form.get("purchasecheck"),
+            }
+        if form.get("purchasecheck"):
+            review["purchasedate"] = datetime.strptime(form.get("purchasedate"), "%m/%d/%Y").isoformat()
+            car = CarModel.objects.get(pk=form["car"])
+            review["car_make"] = car.car_make.name
+            review["car_model"] = car.name
+            review["car_year"]= car.year.strftime("%Y")
+        json_payload = {"review": review}
+        URL = 'https://us-south.functions.appdomain.cloud/api/v1/web/58315d6f-e563-4b26-a1d1-b806616886c4/dealership-package/post-review'
+        post_request(URL, json_payload, dealerId=dealer_id)
+    return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
