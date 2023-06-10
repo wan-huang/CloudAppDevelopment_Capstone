@@ -46,14 +46,21 @@
             </ul>
         </div>
     </nav>
-    
-    <!--Add Contact Us content here -->
-    <h1 class="lead mt-5 text-center">Contact Best Cars Dealership.</h1>
-    <ul>
-        <li class="text-center">Telephone: 123-456-7890</li>
-        <li class="text-center">Address: 123 Stone Rd, City, Province, H0H 0H0, Canada</li>
-        <li class="text-center"><a href = "mailto: abc@example.com">Send Email to ABC@EXAMPLE.COM</a></li>
-    </ul>
+    <!--Add login form here -->
+    <form action="{% url 'djangoapp:login' %}"  method="post">
+        {% csrf_token %}
+        <div class="container">
+          <h1>Login</h1>
+          <label for="username"><b>User Name</b></label></br>
+          <input type="text" placeholder="Enter User Name: " name="username" required></br>
+          <label for="psw"><b>Password</b></label></br>
+          <input type="password" placeholder="Enter Password: " name="psw" required></br></br>
+          <div>
+            <button class="button" type="submit">Login</button>
+          </div>
+        </div>
+      </form>
+
     </body>
 
 </html>
